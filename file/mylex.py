@@ -1,23 +1,6 @@
 import sys
 import ply.lex as lex
 
-tokens = (
-    'NAME',
-    'NUMBER',
-    'PLUS',
-    'MINUS',
-    'TIMES',
-    'DIVIDE',
-    'EQUALS',
-    'LPAREN',
-    'RPAREN',
-    'SQUARE',
-    'ROOT',
-    'MORE',
-    'LESS',
-    'ID',
-)
-
 reserved = {
     'if' : 'IF',
     'then' : 'THEN',
@@ -25,13 +8,16 @@ reserved = {
     'for' : 'FOR'
  }
  
-tokens = ['NAME','NUMBER','PLUS','MINUS','TIMES','DIVIDE','EQUALS','LPAREN','RPAREN','SQUARE','ROOT','MORE','LESS','ID'] + list(reserved.values())
+tokens = ['NAME','NUMBER','PLUS','MINUS','TIMES','DIVIDE','EQUALS','LPAREN','RPAREN','SQUARE','ROOT','MORE','LESS','ID','RBIGPAREN','LBIGPAREN','SEMICOLON'] + list(reserved.values())
 
 def t_ID(t):
      r'[a-zA-Z_][a-zA-Z_0-9]*'
      t.type = reserved.get(t.value,'ID')# Check for reserved words
      return t
 
+t_SEMICOLON =r';'
+t_RBIGPAREN =r'{'
+t_LBIGPAREN =r'}'
 t_MORE      =r'>'
 t_LESS      =r'<'
 t_PLUS      =r'\+'
@@ -60,7 +46,7 @@ def t_error(t):
     t.lexer.skip(1)
     
 lexer = lex.lex()
-lexer.input('IF(5>2)')
+lexer.input('for(i=0;i<=5;i++){5+2}')
 
 while True:
     tok = lexer.token()
