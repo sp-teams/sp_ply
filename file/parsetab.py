@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'DIVIDE EQUALS LPAREN MINUS NAME NUMBER PLUS ROOT RPAREN SQUARE TIMESexpression : expression PLUS termexpression : expression MINUS termexpression : termterm : term TIMES factorterm : term DIVIDE factorterm : factorfactor : NUMBERfactor : LPAREN expression RPAREN'
+_lr_signature = 'DIVIDE EQUALS LPAREN MINUS NAME NUMBER PLUS ROOT RPAREN SQUARE TIMESexpression : expression PLUS termexpression : expression MINUS termexpression : termterm : term TIMES factorterm : term DIVIDE factorterm : factorfactor : NUMBERfactor : LPAREN expression RPARENterm : term SQUARE factorterm : term ROOT factor'
     
-_lr_action_items = {'NUMBER':([0,5,6,7,8,9,],[4,4,4,4,4,4,]),'LPAREN':([0,5,6,7,8,9,],[5,5,5,5,5,5,]),'$end':([1,2,3,4,11,12,13,14,15,],[0,-3,-6,-7,-1,-2,-4,-5,-8,]),'PLUS':([1,2,3,4,10,11,12,13,14,15,],[6,-3,-6,-7,6,-1,-2,-4,-5,-8,]),'MINUS':([1,2,3,4,10,11,12,13,14,15,],[7,-3,-6,-7,7,-1,-2,-4,-5,-8,]),'RPAREN':([2,3,4,10,11,12,13,14,15,],[-3,-6,-7,15,-1,-2,-4,-5,-8,]),'TIMES':([2,3,4,11,12,13,14,15,],[8,-6,-7,8,8,-4,-5,-8,]),'DIVIDE':([2,3,4,11,12,13,14,15,],[9,-6,-7,9,9,-4,-5,-8,]),}
+_lr_action_items = {'NUMBER':([0,5,6,7,8,9,10,11,],[4,4,4,4,4,4,4,4,]),'LPAREN':([0,5,6,7,8,9,10,11,],[5,5,5,5,5,5,5,5,]),'$end':([1,2,3,4,13,14,15,16,17,18,19,],[0,-3,-6,-7,-1,-2,-4,-5,-9,-10,-8,]),'PLUS':([1,2,3,4,12,13,14,15,16,17,18,19,],[6,-3,-6,-7,6,-1,-2,-4,-5,-9,-10,-8,]),'MINUS':([1,2,3,4,12,13,14,15,16,17,18,19,],[7,-3,-6,-7,7,-1,-2,-4,-5,-9,-10,-8,]),'RPAREN':([2,3,4,12,13,14,15,16,17,18,19,],[-3,-6,-7,19,-1,-2,-4,-5,-9,-10,-8,]),'TIMES':([2,3,4,13,14,15,16,17,18,19,],[8,-6,-7,8,8,-4,-5,-9,-10,-8,]),'DIVIDE':([2,3,4,13,14,15,16,17,18,19,],[9,-6,-7,9,9,-4,-5,-9,-10,-8,]),'SQUARE':([2,3,4,13,14,15,16,17,18,19,],[10,-6,-7,10,10,-4,-5,-9,-10,-8,]),'ROOT':([2,3,4,13,14,15,16,17,18,19,],[11,-6,-7,11,11,-4,-5,-9,-10,-8,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'expression':([0,5,],[1,10,]),'term':([0,5,6,7,],[2,2,11,12,]),'factor':([0,5,6,7,8,9,],[3,3,3,3,13,14,]),}
+_lr_goto_items = {'expression':([0,5,],[1,12,]),'term':([0,5,6,7,],[2,2,13,14,]),'factor':([0,5,6,7,8,9,10,11,],[3,3,3,3,15,16,17,18,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -27,12 +27,14 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> expression","S'",1,None,None,None),
-  ('expression -> expression PLUS term','expression',3,'p_expression_plus','yacc.py',4),
-  ('expression -> expression MINUS term','expression',3,'p_expression_minus','yacc.py',8),
-  ('expression -> term','expression',1,'p_expression_term','yacc.py',12),
-  ('term -> term TIMES factor','term',3,'p_term_times','yacc.py',16),
-  ('term -> term DIVIDE factor','term',3,'p_term_div','yacc.py',20),
-  ('term -> factor','term',1,'p_term_factor','yacc.py',24),
-  ('factor -> NUMBER','factor',1,'p_factor_num','yacc.py',28),
-  ('factor -> LPAREN expression RPAREN','factor',3,'p_factor_expr','yacc.py',32),
+  ('expression -> expression PLUS term','expression',3,'p_expression_plus','yacc.py',5),
+  ('expression -> expression MINUS term','expression',3,'p_expression_minus','yacc.py',9),
+  ('expression -> term','expression',1,'p_expression_term','yacc.py',13),
+  ('term -> term TIMES factor','term',3,'p_term_times','yacc.py',17),
+  ('term -> term DIVIDE factor','term',3,'p_term_div','yacc.py',21),
+  ('term -> factor','term',1,'p_term_factor','yacc.py',25),
+  ('factor -> NUMBER','factor',1,'p_factor_num','yacc.py',29),
+  ('factor -> LPAREN expression RPAREN','factor',3,'p_factor_expr','yacc.py',33),
+  ('term -> term SQUARE factor','term',3,'p_square','yacc.py',40),
+  ('term -> term ROOT factor','term',3,'p_root','yacc.py',44),
 ]

@@ -1,4 +1,5 @@
 import ply.yacc as yacc
+import math as mt
 from mylex import tokens
 def p_expression_plus(p):
     'expression : expression PLUS term'
@@ -35,6 +36,13 @@ def p_factor_expr(p):
 def p_error(p):
     print("Syntax error in input !")
 
+def p_square(p):
+    'term : term SQUARE factor'
+    p[0] = mt.pow(p[1],p[3])
+
+def p_root(p):
+    'term : term ROOT factor'
+    p[0]=mt.pow(p[1],1/p[3])
 
 parser = yacc.yacc()
 
