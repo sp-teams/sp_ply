@@ -44,6 +44,8 @@ def p_root(p):
     'term : term ROOT factor'
     p[0]=mt.pow(p[1],1/p[3])
 
+
+
 parser = yacc.yacc()
 
 def start():

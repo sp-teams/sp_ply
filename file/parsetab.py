@@ -6,7 +6,7 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'DIVIDE EQUALS LPAREN MINUS NAME NUMBER PLUS ROOT RPAREN SQUARE TIMESexpression : expression PLUS termexpression : expression MINUS termexpression : termterm : term TIMES factorterm : term DIVIDE factorterm : factorfactor : NUMBERfactor : LPAREN expression RPARENterm : term SQUARE factorterm : term ROOT factor'
+_lr_signature = 'DIVIDE EQUALS LESS LPAREN MINUS MORE NAME NUMBER PLUS ROOT RPAREN SQUARE TIMESexpression : expression PLUS termexpression : expression MINUS termexpression : termterm : term TIMES factorterm : term DIVIDE factorterm : factorfactor : NUMBERfactor : LPAREN expression RPARENterm : term SQUARE factorterm : term ROOT factor'
     
 _lr_action_items = {'NUMBER':([0,5,6,7,8,9,10,11,],[4,4,4,4,4,4,4,4,]),'LPAREN':([0,5,6,7,8,9,10,11,],[5,5,5,5,5,5,5,5,]),'$end':([1,2,3,4,13,14,15,16,17,18,19,],[0,-3,-6,-7,-1,-2,-4,-5,-9,-10,-8,]),'PLUS':([1,2,3,4,12,13,14,15,16,17,18,19,],[6,-3,-6,-7,6,-1,-2,-4,-5,-9,-10,-8,]),'MINUS':([1,2,3,4,12,13,14,15,16,17,18,19,],[7,-3,-6,-7,7,-1,-2,-4,-5,-9,-10,-8,]),'RPAREN':([2,3,4,12,13,14,15,16,17,18,19,],[-3,-6,-7,19,-1,-2,-4,-5,-9,-10,-8,]),'TIMES':([2,3,4,13,14,15,16,17,18,19,],[8,-6,-7,8,8,-4,-5,-9,-10,-8,]),'DIVIDE':([2,3,4,13,14,15,16,17,18,19,],[9,-6,-7,9,9,-4,-5,-9,-10,-8,]),'SQUARE':([2,3,4,13,14,15,16,17,18,19,],[10,-6,-7,10,10,-4,-5,-9,-10,-8,]),'ROOT':([2,3,4,13,14,15,16,17,18,19,],[11,-6,-7,11,11,-4,-5,-9,-10,-8,]),}
 
