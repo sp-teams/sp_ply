@@ -13,8 +13,27 @@ tokens = (
     'RPAREN',
     'SQUARE',
     'ROOT',
+    'MORE',
+    'LESS',
+    'ID',
 )
 
+reserved = {
+    'if' : 'IF',
+    'then' : 'THEN',
+    'else' : 'ELSE',
+    'for' : 'FOR'
+ }
+ 
+tokens = ['NAME','NUMBER','PLUS','MINUS','TIMES','DIVIDE','EQUALS','LPAREN','RPAREN','SQUARE','ROOT','MORE','LESS','ID'] + list(reserved.values())
+
+def t_ID(t):
+     r'[a-zA-Z_][a-zA-Z_0-9]*'
+     t.type = reserved.get(t.value,'ID')# Check for reserved words
+     return t
+
+t_MORE      =r'>'
+t_LESS      =r'<'
 t_PLUS      =r'\+'
 t_MINUS     =r'-'
 t_TIMES     =r'\*'
@@ -41,7 +60,7 @@ def t_error(t):
     t.lexer.skip(1)
     
 lexer = lex.lex()
-lexer.input('(2+2)^2**2')
+lexer.input('IF(5>2)')
 
 while True:
     tok = lexer.token()
