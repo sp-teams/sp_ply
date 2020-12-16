@@ -1,25 +1,60 @@
 import ply.yacc as yacc
 import math as mt
 from mylex import tokens
-def p_expression_plus(p):
-    'expression : expression PLUS term'
-    p[0] = p[1] + p[3]
+###
+'''
+expression  :表達式
+term        :項
+factor      :因子
+const       :常數
+integer     :整數
+-----------------------------------------------------------------------------------------
+Grammar                             Action                                              |
+ --------------------------------    --------------------------------------------       |
+ expression0 : expression1 + term    expression0.val = expression1.val + term.val       |
+             | expression1 - term    expression0.val = expression1.val - term.val       |
+             | term                  expression0.val = term.val                         |
+                                                                                        |
+ term0       : term1 * factor        term0.val = term1.val * factor.val                 |
+             | term1 / factor        term0.val = term1.val / factor.val                 |
+             | factor                term0.val = factor.val                             |
+                                                                                        |
+ factor      : NUMBER                factor.val = int(NUMBER.lexval)                    |
+             | ( expression )        factor.val = expression.val                        |
+                                                                                        |
+-----------------------------------------------------------------------------------------
 
-def p_expression_minus(p):
-    'expression : expression MINUS term'
-    p[0] = p[1] - p[3]
+NUMBER --> factor --> term --> expression
+'''
+###
+def p_expression_PLUS_UND_MINUS(p):
+    ''' expression  :   expression PLUS term
+                    |   expression MINUS term'''
+    if p[2] == '+':
+        p[0] = p[1] + p[3]
+    elif p[2] == '-':
+        p[0] = p[1] - p[3]
+    
+def p_number_MINUS_NUMBER(p):
+    '''expression   :   expression MINUS expression
+                    |   MINUS expression'''
+    if (len(p)==3):
+            p[0] = -p[2]
+    elif (len(p)==4):
+        p[0] = p[1] - p[3]
+
+def p_term_TIMES_UND_DIVIDE(p):
+    ''' term    :   term TIMES factor
+                |   term DIVIDE factor'''
+    if p[2] == '*':
+        p[0] = p[1] * p[3]
+    elif p[2] == '/':
+        p[0] = p[1] / p[3]
+
 
 def p_expression_term(p):
     'expression : term'
     p[0] = p[1] 
-
-def p_term_times(p):
-    'term : term TIMES factor'
-    p[0] = p[1] * p[3]
-
-def p_term_div(p):
-    'term : term DIVIDE factor'
-    p[0] = p[1] / p[3]
 
 def p_term_factor(p):
     'term : factor'
@@ -30,8 +65,12 @@ def p_factor_num(p):
     p[0] = p[1]
 
 def p_factor_expr(p):
-    'factor : LPAREN expression RPAREN'
-    p[0] = p[2]
+    '''factor   :   LPAREN expression RPAREN
+                |   LESS expression MORE'''
+    if p[1] == '<' and p[3] == '>':
+        p[0] = p[2]
+    elif p[1] == '(' and p[3] == ')':
+        p[0] = p[2]
 
 def p_error(p):
     print("Syntax error in input !")
@@ -43,6 +82,15 @@ def p_square(p):
 def p_root(p):
     'term : term ROOT factor'
     p[0]=mt.pow(p[1],1/p[3])
+
+
+'''
+def p_if(p):
+    'expression: IF  expression THEN expression'
+    if p[2] == 1:
+        p[0]=p[4]
+'''
+        
 
 
 
