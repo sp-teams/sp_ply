@@ -83,11 +83,32 @@ def p_root(p):
     'term : term ROOT factor'
     p[0]=mt.pow(p[1],1/p[3])
 
-    
+def p_statement(p):
+    'statement    :   expression'
+    p[0]=p[1]
 
-        
+def p_if(p):
+    '''if_statement     :   IF LPAREN expression RPAREN SPACE statement 
+                        |   IF LPAREN expression RPAREN SPACE statement SPACE ELSE SPACE statement'''
+    p[0]=p[3]
+    if (len(p) == 7):
+        if p[0] != 0 :
+            p[0]=p[6]
+        elif p[0] == 0 :
+            print("Your condition less than 0 and the sentence didn't have else statement")
+    elif (len(p) == 11):
+        if p[0] != 0 :
+            p[0]=p[6]
+        elif p[0] == 0 :
+            p[0]=p[10]
 
+def p_answer(p):
+    'term : if_statement'
+    p[0]=p[1]
 
+def p_end(p):
+    '''end : SEMICOLON'''
+    return p[0]
 
 parser = yacc.yacc()
 

@@ -25,6 +25,7 @@ tokens = ['NAME',
 'MORE',
 'LESS',
 'ID',
+'SPACE',
 'RBRACKET',
 'LBRACKET',
 'SEMICOLON'] + list(reserved.values())
@@ -36,9 +37,10 @@ t_PLUS      =r'\+'
 t_MINUS     =r'-'
 t_TIMES     =r'\*'
 t_DIVIDE    =r'/'
+t_SPACE     =r'\ '
 t_EQUALS    =r'\='
-t_RBRACKET   =r'\['
-t_LBRACKET   =r'\]'
+t_RBRACKET  =r'\['
+t_LBRACKET  =r'\]'
 t_LPAREN    =r'\('
 t_RPAREN    =r'\)'
 t_NAME      =r'[a-zA-Z_][a-zA-Z0-9_]*'
@@ -50,6 +52,10 @@ def t_ID(t):
      t.type = reserved.get(t.value,'ID')# Check for reserved words
      return t
 #----------------------------------End from---------------------------------------
+
+def t_IF(t):
+    r'if'
+    return t
 
 def t_NUMBER(t):
     r'\d+'

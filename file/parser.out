@@ -2,15 +2,12 @@ Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 
 Unused terminals:
 
-    ELSE
     EQUALS
     FOR
     ID
-    IF
     LBRACKET
     NAME
     RBRACKET
-    SEMICOLON
     THEN
 
 Grammar
@@ -29,18 +26,23 @@ Rule 10    factor -> LPAREN expression RPAREN
 Rule 11    factor -> LESS expression MORE
 Rule 12    term -> term SQUARE factor
 Rule 13    term -> term ROOT factor
+Rule 14    statement -> expression
+Rule 15    if_statement -> IF LPAREN expression RPAREN SPACE statement
+Rule 16    if_statement -> IF LPAREN expression RPAREN SPACE statement SPACE ELSE SPACE statement
+Rule 17    term -> if_statement
+Rule 18    end -> SEMICOLON
 
 Terminals, with rules where they appear
 
 DIVIDE               : 6
-ELSE                 : 
+ELSE                 : 16
 EQUALS               : 
 FOR                  : 
 ID                   : 
-IF                   : 
+IF                   : 15 16
 LBRACKET             : 
 LESS                 : 11
-LPAREN               : 10
+LPAREN               : 10 15 16
 MINUS                : 2 3 4
 MORE                 : 11
 NAME                 : 
@@ -48,8 +50,9 @@ NUMBER               : 9
 PLUS                 : 1
 RBRACKET             : 
 ROOT                 : 13
-RPAREN               : 10
-SEMICOLON            : 
+RPAREN               : 10 15 16
+SEMICOLON            : 18
+SPACE                : 15 16 16 16
 SQUARE               : 12
 THEN                 : 
 TIMES                : 5
@@ -57,8 +60,11 @@ error                :
 
 Nonterminals, with rules where they appear
 
-expression           : 1 2 3 3 4 10 11 0
+end                  : 
+expression           : 1 2 3 3 4 10 11 14 15 16 0
 factor               : 5 6 8 12 13
+if_statement         : 17
+statement            : 15 16 16
 term                 : 1 2 5 6 7 12 13
 
 Parsing method: LALR
@@ -76,18 +82,23 @@ state 0
     (8) term -> . factor
     (12) term -> . term SQUARE factor
     (13) term -> . term ROOT factor
+    (17) term -> . if_statement
     (9) factor -> . NUMBER
     (10) factor -> . LPAREN expression RPAREN
     (11) factor -> . LESS expression MORE
+    (15) if_statement -> . IF LPAREN expression RPAREN SPACE statement
+    (16) if_statement -> . IF LPAREN expression RPAREN SPACE statement SPACE ELSE SPACE statement
 
     MINUS           shift and go to state 3
-    NUMBER          shift and go to state 5
-    LPAREN          shift and go to state 6
-    LESS            shift and go to state 7
+    NUMBER          shift and go to state 6
+    LPAREN          shift and go to state 7
+    LESS            shift and go to state 8
+    IF              shift and go to state 9
 
     expression                     shift and go to state 1
     term                           shift and go to state 2
     factor                         shift and go to state 4
+    if_statement                   shift and go to state 5
 
 state 1
 
@@ -96,8 +107,8 @@ state 1
     (2) expression -> expression . MINUS term
     (3) expression -> expression . MINUS expression
 
-    PLUS            shift and go to state 8
-    MINUS           shift and go to state 9
+    PLUS            shift and go to state 10
+    MINUS           shift and go to state 11
 
 
 state 2
@@ -108,15 +119,25 @@ state 2
     (12) term -> term . SQUARE factor
     (13) term -> term . ROOT factor
 
+  ! shift/reduce conflict for TIMES resolved as shift
+  ! shift/reduce conflict for DIVIDE resolved as shift
+  ! shift/reduce conflict for SQUARE resolved as shift
+  ! shift/reduce conflict for ROOT resolved as shift
     PLUS            reduce using rule 7 (expression -> term .)
     MINUS           reduce using rule 7 (expression -> term .)
     $end            reduce using rule 7 (expression -> term .)
     RPAREN          reduce using rule 7 (expression -> term .)
     MORE            reduce using rule 7 (expression -> term .)
-    TIMES           shift and go to state 10
-    DIVIDE          shift and go to state 11
-    SQUARE          shift and go to state 12
-    ROOT            shift and go to state 13
+    SPACE           reduce using rule 7 (expression -> term .)
+    TIMES           shift and go to state 12
+    DIVIDE          shift and go to state 13
+    SQUARE          shift and go to state 14
+    ROOT            shift and go to state 15
+
+  ! TIMES           [ reduce using rule 7 (expression -> term .) ]
+  ! DIVIDE          [ reduce using rule 7 (expression -> term .) ]
+  ! SQUARE          [ reduce using rule 7 (expression -> term .) ]
+  ! ROOT            [ reduce using rule 7 (expression -> term .) ]
 
 
 state 3
@@ -132,18 +153,23 @@ state 3
     (8) term -> . factor
     (12) term -> . term SQUARE factor
     (13) term -> . term ROOT factor
+    (17) term -> . if_statement
     (9) factor -> . NUMBER
     (10) factor -> . LPAREN expression RPAREN
     (11) factor -> . LESS expression MORE
+    (15) if_statement -> . IF LPAREN expression RPAREN SPACE statement
+    (16) if_statement -> . IF LPAREN expression RPAREN SPACE statement SPACE ELSE SPACE statement
 
     MINUS           shift and go to state 3
-    NUMBER          shift and go to state 5
-    LPAREN          shift and go to state 6
-    LESS            shift and go to state 7
+    NUMBER          shift and go to state 6
+    LPAREN          shift and go to state 7
+    LESS            shift and go to state 8
+    IF              shift and go to state 9
 
-    expression                     shift and go to state 14
+    expression                     shift and go to state 16
     term                           shift and go to state 2
     factor                         shift and go to state 4
+    if_statement                   shift and go to state 5
 
 state 4
 
@@ -158,9 +184,26 @@ state 4
     $end            reduce using rule 8 (term -> factor .)
     RPAREN          reduce using rule 8 (term -> factor .)
     MORE            reduce using rule 8 (term -> factor .)
+    SPACE           reduce using rule 8 (term -> factor .)
 
 
 state 5
+
+    (17) term -> if_statement .
+
+    TIMES           reduce using rule 17 (term -> if_statement .)
+    DIVIDE          reduce using rule 17 (term -> if_statement .)
+    SQUARE          reduce using rule 17 (term -> if_statement .)
+    ROOT            reduce using rule 17 (term -> if_statement .)
+    PLUS            reduce using rule 17 (term -> if_statement .)
+    MINUS           reduce using rule 17 (term -> if_statement .)
+    $end            reduce using rule 17 (term -> if_statement .)
+    RPAREN          reduce using rule 17 (term -> if_statement .)
+    MORE            reduce using rule 17 (term -> if_statement .)
+    SPACE           reduce using rule 17 (term -> if_statement .)
+
+
+state 6
 
     (9) factor -> NUMBER .
 
@@ -173,9 +216,10 @@ state 5
     $end            reduce using rule 9 (factor -> NUMBER .)
     RPAREN          reduce using rule 9 (factor -> NUMBER .)
     MORE            reduce using rule 9 (factor -> NUMBER .)
+    SPACE           reduce using rule 9 (factor -> NUMBER .)
 
 
-state 6
+state 7
 
     (10) factor -> LPAREN . expression RPAREN
     (1) expression -> . expression PLUS term
@@ -188,20 +232,25 @@ state 6
     (8) term -> . factor
     (12) term -> . term SQUARE factor
     (13) term -> . term ROOT factor
+    (17) term -> . if_statement
     (9) factor -> . NUMBER
     (10) factor -> . LPAREN expression RPAREN
     (11) factor -> . LESS expression MORE
+    (15) if_statement -> . IF LPAREN expression RPAREN SPACE statement
+    (16) if_statement -> . IF LPAREN expression RPAREN SPACE statement SPACE ELSE SPACE statement
 
     MINUS           shift and go to state 3
-    NUMBER          shift and go to state 5
-    LPAREN          shift and go to state 6
-    LESS            shift and go to state 7
+    NUMBER          shift and go to state 6
+    LPAREN          shift and go to state 7
+    LESS            shift and go to state 8
+    IF              shift and go to state 9
 
-    expression                     shift and go to state 15
+    expression                     shift and go to state 17
     term                           shift and go to state 2
     factor                         shift and go to state 4
+    if_statement                   shift and go to state 5
 
-state 7
+state 8
 
     (11) factor -> LESS . expression MORE
     (1) expression -> . expression PLUS term
@@ -214,20 +263,33 @@ state 7
     (8) term -> . factor
     (12) term -> . term SQUARE factor
     (13) term -> . term ROOT factor
+    (17) term -> . if_statement
     (9) factor -> . NUMBER
     (10) factor -> . LPAREN expression RPAREN
     (11) factor -> . LESS expression MORE
+    (15) if_statement -> . IF LPAREN expression RPAREN SPACE statement
+    (16) if_statement -> . IF LPAREN expression RPAREN SPACE statement SPACE ELSE SPACE statement
 
     MINUS           shift and go to state 3
-    NUMBER          shift and go to state 5
-    LPAREN          shift and go to state 6
-    LESS            shift and go to state 7
+    NUMBER          shift and go to state 6
+    LPAREN          shift and go to state 7
+    LESS            shift and go to state 8
+    IF              shift and go to state 9
 
-    expression                     shift and go to state 16
+    expression                     shift and go to state 18
     term                           shift and go to state 2
     factor                         shift and go to state 4
+    if_statement                   shift and go to state 5
 
-state 8
+state 9
+
+    (15) if_statement -> IF . LPAREN expression RPAREN SPACE statement
+    (16) if_statement -> IF . LPAREN expression RPAREN SPACE statement SPACE ELSE SPACE statement
+
+    LPAREN          shift and go to state 19
+
+
+state 10
 
     (1) expression -> expression PLUS . term
     (5) term -> . term TIMES factor
@@ -235,18 +297,23 @@ state 8
     (8) term -> . factor
     (12) term -> . term SQUARE factor
     (13) term -> . term ROOT factor
+    (17) term -> . if_statement
     (9) factor -> . NUMBER
     (10) factor -> . LPAREN expression RPAREN
     (11) factor -> . LESS expression MORE
+    (15) if_statement -> . IF LPAREN expression RPAREN SPACE statement
+    (16) if_statement -> . IF LPAREN expression RPAREN SPACE statement SPACE ELSE SPACE statement
 
-    NUMBER          shift and go to state 5
-    LPAREN          shift and go to state 6
-    LESS            shift and go to state 7
+    NUMBER          shift and go to state 6
+    LPAREN          shift and go to state 7
+    LESS            shift and go to state 8
+    IF              shift and go to state 9
 
-    term                           shift and go to state 17
+    term                           shift and go to state 20
     factor                         shift and go to state 4
+    if_statement                   shift and go to state 5
 
-state 9
+state 11
 
     (2) expression -> expression MINUS . term
     (3) expression -> expression MINUS . expression
@@ -255,6 +322,7 @@ state 9
     (8) term -> . factor
     (12) term -> . term SQUARE factor
     (13) term -> . term ROOT factor
+    (17) term -> . if_statement
     (1) expression -> . expression PLUS term
     (2) expression -> . expression MINUS term
     (3) expression -> . expression MINUS expression
@@ -263,69 +331,73 @@ state 9
     (9) factor -> . NUMBER
     (10) factor -> . LPAREN expression RPAREN
     (11) factor -> . LESS expression MORE
+    (15) if_statement -> . IF LPAREN expression RPAREN SPACE statement
+    (16) if_statement -> . IF LPAREN expression RPAREN SPACE statement SPACE ELSE SPACE statement
 
     MINUS           shift and go to state 3
-    NUMBER          shift and go to state 5
-    LPAREN          shift and go to state 6
-    LESS            shift and go to state 7
+    NUMBER          shift and go to state 6
+    LPAREN          shift and go to state 7
+    LESS            shift and go to state 8
+    IF              shift and go to state 9
 
-    expression                     shift and go to state 18
-    term                           shift and go to state 19
+    expression                     shift and go to state 21
+    term                           shift and go to state 22
     factor                         shift and go to state 4
+    if_statement                   shift and go to state 5
 
-state 10
+state 12
 
     (5) term -> term TIMES . factor
     (9) factor -> . NUMBER
     (10) factor -> . LPAREN expression RPAREN
     (11) factor -> . LESS expression MORE
 
-    NUMBER          shift and go to state 5
-    LPAREN          shift and go to state 6
-    LESS            shift and go to state 7
+    NUMBER          shift and go to state 6
+    LPAREN          shift and go to state 7
+    LESS            shift and go to state 8
 
-    factor                         shift and go to state 20
+    factor                         shift and go to state 23
 
-state 11
+state 13
 
     (6) term -> term DIVIDE . factor
     (9) factor -> . NUMBER
     (10) factor -> . LPAREN expression RPAREN
     (11) factor -> . LESS expression MORE
 
-    NUMBER          shift and go to state 5
-    LPAREN          shift and go to state 6
-    LESS            shift and go to state 7
+    NUMBER          shift and go to state 6
+    LPAREN          shift and go to state 7
+    LESS            shift and go to state 8
 
-    factor                         shift and go to state 21
+    factor                         shift and go to state 24
 
-state 12
+state 14
 
     (12) term -> term SQUARE . factor
     (9) factor -> . NUMBER
     (10) factor -> . LPAREN expression RPAREN
     (11) factor -> . LESS expression MORE
 
-    NUMBER          shift and go to state 5
-    LPAREN          shift and go to state 6
-    LESS            shift and go to state 7
+    NUMBER          shift and go to state 6
+    LPAREN          shift and go to state 7
+    LESS            shift and go to state 8
 
-    factor                         shift and go to state 22
+    factor                         shift and go to state 25
 
-state 13
+state 15
 
     (13) term -> term ROOT . factor
     (9) factor -> . NUMBER
     (10) factor -> . LPAREN expression RPAREN
     (11) factor -> . LESS expression MORE
 
-    NUMBER          shift and go to state 5
-    LPAREN          shift and go to state 6
-    LESS            shift and go to state 7
+    NUMBER          shift and go to state 6
+    LPAREN          shift and go to state 7
+    LESS            shift and go to state 8
 
-    factor                         shift and go to state 23
+    factor                         shift and go to state 26
 
-state 14
+state 16
 
     (4) expression -> MINUS expression .
     (1) expression -> expression . PLUS term
@@ -337,38 +409,75 @@ state 14
     $end            reduce using rule 4 (expression -> MINUS expression .)
     RPAREN          reduce using rule 4 (expression -> MINUS expression .)
     MORE            reduce using rule 4 (expression -> MINUS expression .)
-    PLUS            shift and go to state 8
-    MINUS           shift and go to state 9
+    SPACE           reduce using rule 4 (expression -> MINUS expression .)
+    TIMES           reduce using rule 4 (expression -> MINUS expression .)
+    DIVIDE          reduce using rule 4 (expression -> MINUS expression .)
+    SQUARE          reduce using rule 4 (expression -> MINUS expression .)
+    ROOT            reduce using rule 4 (expression -> MINUS expression .)
+    PLUS            shift and go to state 10
+    MINUS           shift and go to state 11
 
   ! PLUS            [ reduce using rule 4 (expression -> MINUS expression .) ]
   ! MINUS           [ reduce using rule 4 (expression -> MINUS expression .) ]
 
 
-state 15
+state 17
 
     (10) factor -> LPAREN expression . RPAREN
     (1) expression -> expression . PLUS term
     (2) expression -> expression . MINUS term
     (3) expression -> expression . MINUS expression
 
-    RPAREN          shift and go to state 24
-    PLUS            shift and go to state 8
-    MINUS           shift and go to state 9
+    RPAREN          shift and go to state 27
+    PLUS            shift and go to state 10
+    MINUS           shift and go to state 11
 
 
-state 16
+state 18
 
     (11) factor -> LESS expression . MORE
     (1) expression -> expression . PLUS term
     (2) expression -> expression . MINUS term
     (3) expression -> expression . MINUS expression
 
-    MORE            shift and go to state 25
-    PLUS            shift and go to state 8
-    MINUS           shift and go to state 9
+    MORE            shift and go to state 28
+    PLUS            shift and go to state 10
+    MINUS           shift and go to state 11
 
 
-state 17
+state 19
+
+    (15) if_statement -> IF LPAREN . expression RPAREN SPACE statement
+    (16) if_statement -> IF LPAREN . expression RPAREN SPACE statement SPACE ELSE SPACE statement
+    (1) expression -> . expression PLUS term
+    (2) expression -> . expression MINUS term
+    (3) expression -> . expression MINUS expression
+    (4) expression -> . MINUS expression
+    (7) expression -> . term
+    (5) term -> . term TIMES factor
+    (6) term -> . term DIVIDE factor
+    (8) term -> . factor
+    (12) term -> . term SQUARE factor
+    (13) term -> . term ROOT factor
+    (17) term -> . if_statement
+    (9) factor -> . NUMBER
+    (10) factor -> . LPAREN expression RPAREN
+    (11) factor -> . LESS expression MORE
+    (15) if_statement -> . IF LPAREN expression RPAREN SPACE statement
+    (16) if_statement -> . IF LPAREN expression RPAREN SPACE statement SPACE ELSE SPACE statement
+
+    MINUS           shift and go to state 3
+    NUMBER          shift and go to state 6
+    LPAREN          shift and go to state 7
+    LESS            shift and go to state 8
+    IF              shift and go to state 9
+
+    expression                     shift and go to state 29
+    term                           shift and go to state 2
+    factor                         shift and go to state 4
+    if_statement                   shift and go to state 5
+
+state 20
 
     (1) expression -> expression PLUS term .
     (5) term -> term . TIMES factor
@@ -376,18 +485,28 @@ state 17
     (12) term -> term . SQUARE factor
     (13) term -> term . ROOT factor
 
+  ! shift/reduce conflict for TIMES resolved as shift
+  ! shift/reduce conflict for DIVIDE resolved as shift
+  ! shift/reduce conflict for SQUARE resolved as shift
+  ! shift/reduce conflict for ROOT resolved as shift
     PLUS            reduce using rule 1 (expression -> expression PLUS term .)
     MINUS           reduce using rule 1 (expression -> expression PLUS term .)
     $end            reduce using rule 1 (expression -> expression PLUS term .)
     RPAREN          reduce using rule 1 (expression -> expression PLUS term .)
     MORE            reduce using rule 1 (expression -> expression PLUS term .)
-    TIMES           shift and go to state 10
-    DIVIDE          shift and go to state 11
-    SQUARE          shift and go to state 12
-    ROOT            shift and go to state 13
+    SPACE           reduce using rule 1 (expression -> expression PLUS term .)
+    TIMES           shift and go to state 12
+    DIVIDE          shift and go to state 13
+    SQUARE          shift and go to state 14
+    ROOT            shift and go to state 15
+
+  ! TIMES           [ reduce using rule 1 (expression -> expression PLUS term .) ]
+  ! DIVIDE          [ reduce using rule 1 (expression -> expression PLUS term .) ]
+  ! SQUARE          [ reduce using rule 1 (expression -> expression PLUS term .) ]
+  ! ROOT            [ reduce using rule 1 (expression -> expression PLUS term .) ]
 
 
-state 18
+state 21
 
     (3) expression -> expression MINUS expression .
     (1) expression -> expression . PLUS term
@@ -399,14 +518,19 @@ state 18
     $end            reduce using rule 3 (expression -> expression MINUS expression .)
     RPAREN          reduce using rule 3 (expression -> expression MINUS expression .)
     MORE            reduce using rule 3 (expression -> expression MINUS expression .)
-    PLUS            shift and go to state 8
-    MINUS           shift and go to state 9
+    SPACE           reduce using rule 3 (expression -> expression MINUS expression .)
+    TIMES           reduce using rule 3 (expression -> expression MINUS expression .)
+    DIVIDE          reduce using rule 3 (expression -> expression MINUS expression .)
+    SQUARE          reduce using rule 3 (expression -> expression MINUS expression .)
+    ROOT            reduce using rule 3 (expression -> expression MINUS expression .)
+    PLUS            shift and go to state 10
+    MINUS           shift and go to state 11
 
   ! PLUS            [ reduce using rule 3 (expression -> expression MINUS expression .) ]
   ! MINUS           [ reduce using rule 3 (expression -> expression MINUS expression .) ]
 
 
-state 19
+state 22
 
     (2) expression -> expression MINUS term .
     (5) term -> term . TIMES factor
@@ -415,29 +539,48 @@ state 19
     (13) term -> term . ROOT factor
     (7) expression -> term .
 
+  ! shift/reduce conflict for TIMES resolved as shift
+  ! shift/reduce conflict for DIVIDE resolved as shift
+  ! shift/reduce conflict for SQUARE resolved as shift
+  ! shift/reduce conflict for ROOT resolved as shift
   ! reduce/reduce conflict for PLUS resolved using rule 2 (expression -> expression MINUS term .)
   ! reduce/reduce conflict for MINUS resolved using rule 2 (expression -> expression MINUS term .)
   ! reduce/reduce conflict for $end resolved using rule 2 (expression -> expression MINUS term .)
   ! reduce/reduce conflict for RPAREN resolved using rule 2 (expression -> expression MINUS term .)
   ! reduce/reduce conflict for MORE resolved using rule 2 (expression -> expression MINUS term .)
+  ! reduce/reduce conflict for SPACE resolved using rule 2 (expression -> expression MINUS term .)
+  ! shift/reduce conflict for TIMES resolved as shift
+  ! shift/reduce conflict for DIVIDE resolved as shift
+  ! shift/reduce conflict for SQUARE resolved as shift
+  ! shift/reduce conflict for ROOT resolved as shift
     PLUS            reduce using rule 2 (expression -> expression MINUS term .)
     MINUS           reduce using rule 2 (expression -> expression MINUS term .)
     $end            reduce using rule 2 (expression -> expression MINUS term .)
     RPAREN          reduce using rule 2 (expression -> expression MINUS term .)
     MORE            reduce using rule 2 (expression -> expression MINUS term .)
-    TIMES           shift and go to state 10
-    DIVIDE          shift and go to state 11
-    SQUARE          shift and go to state 12
-    ROOT            shift and go to state 13
+    SPACE           reduce using rule 2 (expression -> expression MINUS term .)
+    TIMES           shift and go to state 12
+    DIVIDE          shift and go to state 13
+    SQUARE          shift and go to state 14
+    ROOT            shift and go to state 15
 
+  ! TIMES           [ reduce using rule 2 (expression -> expression MINUS term .) ]
+  ! DIVIDE          [ reduce using rule 2 (expression -> expression MINUS term .) ]
+  ! SQUARE          [ reduce using rule 2 (expression -> expression MINUS term .) ]
+  ! ROOT            [ reduce using rule 2 (expression -> expression MINUS term .) ]
   ! PLUS            [ reduce using rule 7 (expression -> term .) ]
   ! MINUS           [ reduce using rule 7 (expression -> term .) ]
   ! $end            [ reduce using rule 7 (expression -> term .) ]
   ! RPAREN          [ reduce using rule 7 (expression -> term .) ]
   ! MORE            [ reduce using rule 7 (expression -> term .) ]
+  ! SPACE           [ reduce using rule 7 (expression -> term .) ]
+  ! TIMES           [ reduce using rule 7 (expression -> term .) ]
+  ! DIVIDE          [ reduce using rule 7 (expression -> term .) ]
+  ! SQUARE          [ reduce using rule 7 (expression -> term .) ]
+  ! ROOT            [ reduce using rule 7 (expression -> term .) ]
 
 
-state 20
+state 23
 
     (5) term -> term TIMES factor .
 
@@ -450,9 +593,10 @@ state 20
     $end            reduce using rule 5 (term -> term TIMES factor .)
     RPAREN          reduce using rule 5 (term -> term TIMES factor .)
     MORE            reduce using rule 5 (term -> term TIMES factor .)
+    SPACE           reduce using rule 5 (term -> term TIMES factor .)
 
 
-state 21
+state 24
 
     (6) term -> term DIVIDE factor .
 
@@ -465,9 +609,10 @@ state 21
     $end            reduce using rule 6 (term -> term DIVIDE factor .)
     RPAREN          reduce using rule 6 (term -> term DIVIDE factor .)
     MORE            reduce using rule 6 (term -> term DIVIDE factor .)
+    SPACE           reduce using rule 6 (term -> term DIVIDE factor .)
 
 
-state 22
+state 25
 
     (12) term -> term SQUARE factor .
 
@@ -480,9 +625,10 @@ state 22
     $end            reduce using rule 12 (term -> term SQUARE factor .)
     RPAREN          reduce using rule 12 (term -> term SQUARE factor .)
     MORE            reduce using rule 12 (term -> term SQUARE factor .)
+    SPACE           reduce using rule 12 (term -> term SQUARE factor .)
 
 
-state 23
+state 26
 
     (13) term -> term ROOT factor .
 
@@ -495,9 +641,10 @@ state 23
     $end            reduce using rule 13 (term -> term ROOT factor .)
     RPAREN          reduce using rule 13 (term -> term ROOT factor .)
     MORE            reduce using rule 13 (term -> term ROOT factor .)
+    SPACE           reduce using rule 13 (term -> term ROOT factor .)
 
 
-state 24
+state 27
 
     (10) factor -> LPAREN expression RPAREN .
 
@@ -510,9 +657,10 @@ state 24
     $end            reduce using rule 10 (factor -> LPAREN expression RPAREN .)
     RPAREN          reduce using rule 10 (factor -> LPAREN expression RPAREN .)
     MORE            reduce using rule 10 (factor -> LPAREN expression RPAREN .)
+    SPACE           reduce using rule 10 (factor -> LPAREN expression RPAREN .)
 
 
-state 25
+state 28
 
     (11) factor -> LESS expression MORE .
 
@@ -525,13 +673,195 @@ state 25
     $end            reduce using rule 11 (factor -> LESS expression MORE .)
     RPAREN          reduce using rule 11 (factor -> LESS expression MORE .)
     MORE            reduce using rule 11 (factor -> LESS expression MORE .)
+    SPACE           reduce using rule 11 (factor -> LESS expression MORE .)
+
+
+state 29
+
+    (15) if_statement -> IF LPAREN expression . RPAREN SPACE statement
+    (16) if_statement -> IF LPAREN expression . RPAREN SPACE statement SPACE ELSE SPACE statement
+    (1) expression -> expression . PLUS term
+    (2) expression -> expression . MINUS term
+    (3) expression -> expression . MINUS expression
+
+    RPAREN          shift and go to state 30
+    PLUS            shift and go to state 10
+    MINUS           shift and go to state 11
+
+
+state 30
+
+    (15) if_statement -> IF LPAREN expression RPAREN . SPACE statement
+    (16) if_statement -> IF LPAREN expression RPAREN . SPACE statement SPACE ELSE SPACE statement
+
+    SPACE           shift and go to state 31
+
+
+state 31
+
+    (15) if_statement -> IF LPAREN expression RPAREN SPACE . statement
+    (16) if_statement -> IF LPAREN expression RPAREN SPACE . statement SPACE ELSE SPACE statement
+    (14) statement -> . expression
+    (1) expression -> . expression PLUS term
+    (2) expression -> . expression MINUS term
+    (3) expression -> . expression MINUS expression
+    (4) expression -> . MINUS expression
+    (7) expression -> . term
+    (5) term -> . term TIMES factor
+    (6) term -> . term DIVIDE factor
+    (8) term -> . factor
+    (12) term -> . term SQUARE factor
+    (13) term -> . term ROOT factor
+    (17) term -> . if_statement
+    (9) factor -> . NUMBER
+    (10) factor -> . LPAREN expression RPAREN
+    (11) factor -> . LESS expression MORE
+    (15) if_statement -> . IF LPAREN expression RPAREN SPACE statement
+    (16) if_statement -> . IF LPAREN expression RPAREN SPACE statement SPACE ELSE SPACE statement
+
+    MINUS           shift and go to state 3
+    NUMBER          shift and go to state 6
+    LPAREN          shift and go to state 7
+    LESS            shift and go to state 8
+    IF              shift and go to state 9
+
+    expression                     shift and go to state 32
+    statement                      shift and go to state 33
+    term                           shift and go to state 2
+    factor                         shift and go to state 4
+    if_statement                   shift and go to state 5
+
+state 32
+
+    (14) statement -> expression .
+    (1) expression -> expression . PLUS term
+    (2) expression -> expression . MINUS term
+    (3) expression -> expression . MINUS expression
+
+  ! shift/reduce conflict for PLUS resolved as shift
+  ! shift/reduce conflict for MINUS resolved as shift
+    $end            reduce using rule 14 (statement -> expression .)
+    RPAREN          reduce using rule 14 (statement -> expression .)
+    MORE            reduce using rule 14 (statement -> expression .)
+    SPACE           reduce using rule 14 (statement -> expression .)
+    TIMES           reduce using rule 14 (statement -> expression .)
+    DIVIDE          reduce using rule 14 (statement -> expression .)
+    SQUARE          reduce using rule 14 (statement -> expression .)
+    ROOT            reduce using rule 14 (statement -> expression .)
+    PLUS            shift and go to state 10
+    MINUS           shift and go to state 11
+
+  ! PLUS            [ reduce using rule 14 (statement -> expression .) ]
+  ! MINUS           [ reduce using rule 14 (statement -> expression .) ]
+
+
+state 33
+
+    (15) if_statement -> IF LPAREN expression RPAREN SPACE statement .
+    (16) if_statement -> IF LPAREN expression RPAREN SPACE statement . SPACE ELSE SPACE statement
+
+  ! shift/reduce conflict for SPACE resolved as shift
+    TIMES           reduce using rule 15 (if_statement -> IF LPAREN expression RPAREN SPACE statement .)
+    DIVIDE          reduce using rule 15 (if_statement -> IF LPAREN expression RPAREN SPACE statement .)
+    SQUARE          reduce using rule 15 (if_statement -> IF LPAREN expression RPAREN SPACE statement .)
+    ROOT            reduce using rule 15 (if_statement -> IF LPAREN expression RPAREN SPACE statement .)
+    PLUS            reduce using rule 15 (if_statement -> IF LPAREN expression RPAREN SPACE statement .)
+    MINUS           reduce using rule 15 (if_statement -> IF LPAREN expression RPAREN SPACE statement .)
+    $end            reduce using rule 15 (if_statement -> IF LPAREN expression RPAREN SPACE statement .)
+    RPAREN          reduce using rule 15 (if_statement -> IF LPAREN expression RPAREN SPACE statement .)
+    MORE            reduce using rule 15 (if_statement -> IF LPAREN expression RPAREN SPACE statement .)
+    SPACE           shift and go to state 34
+
+  ! SPACE           [ reduce using rule 15 (if_statement -> IF LPAREN expression RPAREN SPACE statement .) ]
+
+
+state 34
+
+    (16) if_statement -> IF LPAREN expression RPAREN SPACE statement SPACE . ELSE SPACE statement
+
+    ELSE            shift and go to state 35
+
+
+state 35
+
+    (16) if_statement -> IF LPAREN expression RPAREN SPACE statement SPACE ELSE . SPACE statement
+
+    SPACE           shift and go to state 36
+
+
+state 36
+
+    (16) if_statement -> IF LPAREN expression RPAREN SPACE statement SPACE ELSE SPACE . statement
+    (14) statement -> . expression
+    (1) expression -> . expression PLUS term
+    (2) expression -> . expression MINUS term
+    (3) expression -> . expression MINUS expression
+    (4) expression -> . MINUS expression
+    (7) expression -> . term
+    (5) term -> . term TIMES factor
+    (6) term -> . term DIVIDE factor
+    (8) term -> . factor
+    (12) term -> . term SQUARE factor
+    (13) term -> . term ROOT factor
+    (17) term -> . if_statement
+    (9) factor -> . NUMBER
+    (10) factor -> . LPAREN expression RPAREN
+    (11) factor -> . LESS expression MORE
+    (15) if_statement -> . IF LPAREN expression RPAREN SPACE statement
+    (16) if_statement -> . IF LPAREN expression RPAREN SPACE statement SPACE ELSE SPACE statement
+
+    MINUS           shift and go to state 3
+    NUMBER          shift and go to state 6
+    LPAREN          shift and go to state 7
+    LESS            shift and go to state 8
+    IF              shift and go to state 9
+
+    expression                     shift and go to state 32
+    statement                      shift and go to state 37
+    term                           shift and go to state 2
+    factor                         shift and go to state 4
+    if_statement                   shift and go to state 5
+
+state 37
+
+    (16) if_statement -> IF LPAREN expression RPAREN SPACE statement SPACE ELSE SPACE statement .
+
+    TIMES           reduce using rule 16 (if_statement -> IF LPAREN expression RPAREN SPACE statement SPACE ELSE SPACE statement .)
+    DIVIDE          reduce using rule 16 (if_statement -> IF LPAREN expression RPAREN SPACE statement SPACE ELSE SPACE statement .)
+    SQUARE          reduce using rule 16 (if_statement -> IF LPAREN expression RPAREN SPACE statement SPACE ELSE SPACE statement .)
+    ROOT            reduce using rule 16 (if_statement -> IF LPAREN expression RPAREN SPACE statement SPACE ELSE SPACE statement .)
+    PLUS            reduce using rule 16 (if_statement -> IF LPAREN expression RPAREN SPACE statement SPACE ELSE SPACE statement .)
+    MINUS           reduce using rule 16 (if_statement -> IF LPAREN expression RPAREN SPACE statement SPACE ELSE SPACE statement .)
+    $end            reduce using rule 16 (if_statement -> IF LPAREN expression RPAREN SPACE statement SPACE ELSE SPACE statement .)
+    RPAREN          reduce using rule 16 (if_statement -> IF LPAREN expression RPAREN SPACE statement SPACE ELSE SPACE statement .)
+    MORE            reduce using rule 16 (if_statement -> IF LPAREN expression RPAREN SPACE statement SPACE ELSE SPACE statement .)
+    SPACE           reduce using rule 16 (if_statement -> IF LPAREN expression RPAREN SPACE statement SPACE ELSE SPACE statement .)
 
 WARNING: 
 WARNING: Conflicts:
 WARNING: 
-WARNING: shift/reduce conflict for PLUS in state 14 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 14 resolved as shift
-WARNING: shift/reduce conflict for PLUS in state 18 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 18 resolved as shift
-WARNING: reduce/reduce conflict in state 19 resolved using rule (expression -> expression MINUS term)
-WARNING: rejected rule (expression -> term) in state 19
+WARNING: shift/reduce conflict for TIMES in state 2 resolved as shift
+WARNING: shift/reduce conflict for DIVIDE in state 2 resolved as shift
+WARNING: shift/reduce conflict for SQUARE in state 2 resolved as shift
+WARNING: shift/reduce conflict for ROOT in state 2 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 16 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 16 resolved as shift
+WARNING: shift/reduce conflict for TIMES in state 20 resolved as shift
+WARNING: shift/reduce conflict for DIVIDE in state 20 resolved as shift
+WARNING: shift/reduce conflict for SQUARE in state 20 resolved as shift
+WARNING: shift/reduce conflict for ROOT in state 20 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 21 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 21 resolved as shift
+WARNING: shift/reduce conflict for TIMES in state 22 resolved as shift
+WARNING: shift/reduce conflict for DIVIDE in state 22 resolved as shift
+WARNING: shift/reduce conflict for SQUARE in state 22 resolved as shift
+WARNING: shift/reduce conflict for ROOT in state 22 resolved as shift
+WARNING: shift/reduce conflict for TIMES in state 22 resolved as shift
+WARNING: shift/reduce conflict for DIVIDE in state 22 resolved as shift
+WARNING: shift/reduce conflict for SQUARE in state 22 resolved as shift
+WARNING: shift/reduce conflict for ROOT in state 22 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 32 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 32 resolved as shift
+WARNING: shift/reduce conflict for SPACE in state 33 resolved as shift
+WARNING: reduce/reduce conflict in state 22 resolved using rule (expression -> expression MINUS term)
+WARNING: rejected rule (expression -> term) in state 22
