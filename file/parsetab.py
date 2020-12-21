@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'DIVIDE EQUALS LESS LPAREN MINUS MORE NAME NUMBER PLUS ROOT RPAREN SQUARE TIMESexpression : expression PLUS termexpression : expression MINUS termexpression : termterm : term TIMES factorterm : term DIVIDE factorterm : factorfactor : NUMBERfactor : LPAREN expression RPARENterm : term SQUARE factorterm : term ROOT factor'
+_lr_signature = 'DIVIDE ELSE EQUALS FOR ID IF LBRACKET LESS LPAREN MINUS MORE NAME NUMBER PLUS RBRACKET ROOT RPAREN SEMICOLON SPACE SQUARE THEN TIMES expression  :   expression PLUS term\n                    |   expression MINUS termexpression   :   expression MINUS expression\n                    |   MINUS expression term    :   term TIMES factor\n                |   term DIVIDE factorexpression : termterm : factorfactor : NUMBERfactor   :   LPAREN expression RPAREN\n                |   LESS expression MOREterm : term SQUARE factorterm : term ROOT factorstatement    :   expressionif_statement     :   IF LPAREN expression RPAREN SPACE statement \n                        |   IF LPAREN expression RPAREN SPACE statement SPACE ELSE SPACE statementterm : if_statementend : SEMICOLON'
     
-_lr_action_items = {'NUMBER':([0,5,6,7,8,9,10,11,],[4,4,4,4,4,4,4,4,]),'LPAREN':([0,5,6,7,8,9,10,11,],[5,5,5,5,5,5,5,5,]),'$end':([1,2,3,4,13,14,15,16,17,18,19,],[0,-3,-6,-7,-1,-2,-4,-5,-9,-10,-8,]),'PLUS':([1,2,3,4,12,13,14,15,16,17,18,19,],[6,-3,-6,-7,6,-1,-2,-4,-5,-9,-10,-8,]),'MINUS':([1,2,3,4,12,13,14,15,16,17,18,19,],[7,-3,-6,-7,7,-1,-2,-4,-5,-9,-10,-8,]),'RPAREN':([2,3,4,12,13,14,15,16,17,18,19,],[-3,-6,-7,19,-1,-2,-4,-5,-9,-10,-8,]),'TIMES':([2,3,4,13,14,15,16,17,18,19,],[8,-6,-7,8,8,-4,-5,-9,-10,-8,]),'DIVIDE':([2,3,4,13,14,15,16,17,18,19,],[9,-6,-7,9,9,-4,-5,-9,-10,-8,]),'SQUARE':([2,3,4,13,14,15,16,17,18,19,],[10,-6,-7,10,10,-4,-5,-9,-10,-8,]),'ROOT':([2,3,4,13,14,15,16,17,18,19,],[11,-6,-7,11,11,-4,-5,-9,-10,-8,]),}
+_lr_action_items = {'MINUS':([0,1,2,3,4,5,6,7,8,11,16,17,18,19,20,21,22,23,24,25,26,27,28,29,31,32,33,36,37,],[3,11,-7,3,-8,-17,-9,3,3,3,11,11,11,3,-1,11,-2,-5,-6,-12,-13,-10,-11,11,3,11,-15,3,-16,]),'NUMBER':([0,3,7,8,10,11,12,13,14,15,19,31,36,],[6,6,6,6,6,6,6,6,6,6,6,6,6,]),'LPAREN':([0,3,7,8,9,10,11,12,13,14,15,19,31,36,],[7,7,7,7,19,7,7,7,7,7,7,7,7,7,]),'LESS':([0,3,7,8,10,11,12,13,14,15,19,31,36,],[8,8,8,8,8,8,8,8,8,8,8,8,8,]),'IF':([0,3,7,8,10,11,19,31,36,],[9,9,9,9,9,9,9,9,9,]),'$end':([1,2,4,5,6,16,20,21,22,23,24,25,26,27,28,32,33,37,],[0,-7,-8,-17,-9,-4,-1,-3,-2,-5,-6,-12,-13,-10,-11,-14,-15,-16,]),'PLUS':([1,2,4,5,6,16,17,18,20,21,22,23,24,25,26,27,28,29,32,33,37,],[10,-7,-8,-17,-9,10,10,10,-1,10,-2,-5,-6,-12,-13,-10,-11,10,10,-15,-16,]),'RPAREN':([2,4,5,6,16,17,20,21,22,23,24,25,26,27,28,29,32,33,37,],[-7,-8,-17,-9,-4,27,-1,-3,-2,-5,-6,-12,-13,-10,-11,30,-14,-15,-16,]),'MORE':([2,4,5,6,16,18,20,21,22,23,24,25,26,27,28,32,33,37,],[-7,-8,-17,-9,-4,28,-1,-3,-2,-5,-6,-12,-13,-10,-11,-14,-15,-16,]),'SPACE':([2,4,5,6,16,20,21,22,23,24,25,26,27,28,30,32,33,35,37,],[-7,-8,-17,-9,-4,-1,-3,-2,-5,-6,-12,-13,-10,-11,31,-14,34,36,-16,]),'TIMES':([2,4,5,6,16,20,21,22,23,24,25,26,27,28,32,33,37,],[12,-8,-17,-9,-4,12,-3,12,-5,-6,-12,-13,-10,-11,-14,-15,-16,]),'DIVIDE':([2,4,5,6,16,20,21,22,23,24,25,26,27,28,32,33,37,],[13,-8,-17,-9,-4,13,-3,13,-5,-6,-12,-13,-10,-11,-14,-15,-16,]),'SQUARE':([2,4,5,6,16,20,21,22,23,24,25,26,27,28,32,33,37,],[14,-8,-17,-9,-4,14,-3,14,-5,-6,-12,-13,-10,-11,-14,-15,-16,]),'ROOT':([2,4,5,6,16,20,21,22,23,24,25,26,27,28,32,33,37,],[15,-8,-17,-9,-4,15,-3,15,-5,-6,-12,-13,-10,-11,-14,-15,-16,]),'ELSE':([34,],[35,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'expression':([0,5,],[1,12,]),'term':([0,5,6,7,],[2,2,13,14,]),'factor':([0,5,6,7,8,9,10,11,],[3,3,3,3,15,16,17,18,]),}
+_lr_goto_items = {'expression':([0,3,7,8,11,19,31,36,],[1,16,17,18,21,29,32,32,]),'term':([0,3,7,8,10,11,19,31,36,],[2,2,2,2,20,22,2,2,2,]),'factor':([0,3,7,8,10,11,12,13,14,15,19,31,36,],[4,4,4,4,4,4,23,24,25,26,4,4,4,]),'if_statement':([0,3,7,8,10,11,19,31,36,],[5,5,5,5,5,5,5,5,5,]),'statement':([31,36,],[33,37,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -27,14 +27,22 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> expression","S'",1,None,None,None),
-  ('expression -> expression PLUS term','expression',3,'p_expression_plus','yacc.py',5),
-  ('expression -> expression MINUS term','expression',3,'p_expression_minus','yacc.py',9),
-  ('expression -> term','expression',1,'p_expression_term','yacc.py',13),
-  ('term -> term TIMES factor','term',3,'p_term_times','yacc.py',17),
-  ('term -> term DIVIDE factor','term',3,'p_term_div','yacc.py',21),
-  ('term -> factor','term',1,'p_term_factor','yacc.py',25),
-  ('factor -> NUMBER','factor',1,'p_factor_num','yacc.py',29),
-  ('factor -> LPAREN expression RPAREN','factor',3,'p_factor_expr','yacc.py',33),
-  ('term -> term SQUARE factor','term',3,'p_square','yacc.py',40),
-  ('term -> term ROOT factor','term',3,'p_root','yacc.py',44),
+  ('expression -> expression PLUS term','expression',3,'p_expression_PLUS_UND_MINUS','yacc2.py',31),
+  ('expression -> expression MINUS term','expression',3,'p_expression_PLUS_UND_MINUS','yacc2.py',32),
+  ('expression -> expression MINUS expression','expression',3,'p_number_MINUS_NUMBER','yacc2.py',39),
+  ('expression -> MINUS expression','expression',2,'p_number_MINUS_NUMBER','yacc2.py',40),
+  ('term -> term TIMES factor','term',3,'p_term_TIMES_UND_DIVIDE','yacc2.py',47),
+  ('term -> term DIVIDE factor','term',3,'p_term_TIMES_UND_DIVIDE','yacc2.py',48),
+  ('expression -> term','expression',1,'p_expression_term','yacc2.py',56),
+  ('term -> factor','term',1,'p_term_factor','yacc2.py',60),
+  ('factor -> NUMBER','factor',1,'p_factor_num','yacc2.py',64),
+  ('factor -> LPAREN expression RPAREN','factor',3,'p_factor_expr','yacc2.py',68),
+  ('factor -> LESS expression MORE','factor',3,'p_factor_expr','yacc2.py',69),
+  ('term -> term SQUARE factor','term',3,'p_square','yacc2.py',79),
+  ('term -> term ROOT factor','term',3,'p_root','yacc2.py',83),
+  ('statement -> expression','statement',1,'p_statement','yacc2.py',87),
+  ('if_statement -> IF LPAREN expression RPAREN SPACE statement','if_statement',6,'p_if','yacc2.py',91),
+  ('if_statement -> IF LPAREN expression RPAREN SPACE statement SPACE ELSE SPACE statement','if_statement',10,'p_if','yacc2.py',92),
+  ('term -> if_statement','term',1,'p_answer','yacc2.py',106),
+  ('end -> SEMICOLON','end',1,'p_end','yacc2.py',110),
 ]
