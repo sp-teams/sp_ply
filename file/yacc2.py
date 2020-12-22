@@ -118,9 +118,12 @@ def p_if(p):
         elif p[0] == 0 :
             p[0]=p[9]
 #--------------------------------------------
+def p_var(p):
+    'var    :   ID  '
 
-#def p_for(p):
-#    '''for_statement    :   FOR LPAREN  RPAREN '''
+def p_for(p):
+    '''for_statement    :   FOR LPAREN  expression  RPAREN '''
+
 
 def p_answer(p):
     'term : if_statement'
